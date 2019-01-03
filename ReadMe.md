@@ -1,3 +1,3 @@
-Open it on [https://stackblitz.com/github/gabyx/SmileyConverter](https://stackblitz.com/github/gabyx/SmileyConverter)
+Open it on [https://gabyx.github.io/SmileyConverter/index.html](https://gabyx.github.io/SmileyConverter/index.html).
 
-Live on: https://gqaixmav.github.stackblitz.io
+Enjoy.
