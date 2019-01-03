@@ -70,8 +70,8 @@ export class AppComponent implements OnInit {
 
   private webWorkerResult: Promise<string[]>;
 
-  private fontSize = 12;
-  private lineHeight = 16;
+  public fontSize = 12;
+  public lineHeight = 16;
 
   constructor(
     private dialog: MatDialog,
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
     this.load();
   }
 
-  private async load(extAdd = ".jpg"): Promise<void> {
+  public async load(extAdd = ".jpg"): Promise<void> {
     const orig = `${this.imageUrl}`;
 
     const replaceExt = (extAdd, failed = true) => {
@@ -136,7 +136,7 @@ export class AppComponent implements OnInit {
       );
   }
 
-  public async loadCanvas(): Promise<void> {
+  private async loadCanvas(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.imageOrig = new Image();
       this.imageOrig.crossOrigin = "";
@@ -161,7 +161,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private async updateFiltered() {
+  public async updateFiltered() {
     this.updateBinaryImage().then(
       () => this.computeOutput(),
       error => {
@@ -170,7 +170,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  private async updateBinaryImage() {
+  public async updateBinaryImage() {
     const img = this.imgDataOrig;
     if (!img) {
       throw "Image not loaded!";
@@ -194,7 +194,7 @@ export class AppComponent implements OnInit {
       .putImageData(this.imgDataBinary.imgData, 0, 0);
   }
 
-  private async computeOutput() {
+  public async computeOutput() {
     return this.compute().then(
       value => {
         this.outputLines = value;
