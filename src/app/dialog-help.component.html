@@ -1,27 +1,36 @@
-<h1 mat-dialog-title>Hi</h1>
-<div mat-dialog-content>
-  <p>The image URL needs to be copied from an uploaded image to <a href="https://imgur.com">imgur.com/upload</a>
-  It should not be to big! e.g. 100px x 100px.
-  You can resize the image on imgur directly!
-<p>For imgur.com image links you can add the following letters</p>
+<div class="mat-app-background app-theme basic-container-dialog">
+  <h1 mat-dialog-title>Hi</h1>
+  <div mat-dialog-content>
+    <p>
+      The image URL needs to be copied from an uploaded image to
+      <a href="https://imgur.com">imgur.com/upload</a> It should not be to big!
+      e.g. 100px x 100px. You can resize the image on imgur directly!
+    </p>
 
-<ul>
-<li><code>h</code> : Huge</li>
+    <p>For imgur.com image links you can add the following letters</p>
 
-<li><code>l</code> : Large </li>
+    <ul>
+      <li><code>h</code> : Huge</li>
 
-<li><code>m</code> : Medium</li>
+      <li><code>l</code> : Large</li>
 
-<li><code>t</code> : Tiny</li>
+      <li><code>m</code> : Medium</li>
 
-<li><code>b</code> : Extra Tiny </li>
+      <li><code>t</code> : Tiny</li>
 
-<li><code>s</code> : Super Tiny</li>
-</ul>
+      <li><code>b</code> : Extra Tiny</li>
 
-<p>to the filename <em><code>78YFb1H.png</code></em> e.g.: <em><code>https://i.imgur.com/78YFb1Hs.png</code></em> for a super small image.</p>
-  © Gabriel Nützi, 2019.
-</div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+      <li><code>s</code> : Super Tiny</li>
+    </ul>
+
+    <p>
+      to the filename <em><code>78YFb1H.png</code></em> e.g.:
+      <em><code>https://i.imgur.com/78YFb1Hs.png</code></em> for a super small
+      image.
+    </p>
+    © Gabriel Nützi, 2019.
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  </div>
 </div>

@@ -1,12 +1,12 @@
-import { Component, OnInit, OnChanges, ViewChild, ElementRef, Input, Output, SimpleChanges, EventEmitter, Inject } from '@angular/core';
-
-import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { MatSliderChange } from '@angular/material/slider';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { WebWorkerService } from 'ngx-web-worker';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Inject
+} from "@angular/core";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { WebWorkerService } from "ngx-web-worker";
 
 interface Pixel {
   r: number;
@@ -16,10 +16,11 @@ interface Pixel {
 }
 
 class MImageData {
-  public constructor(public imgData: any) {
-  }
+  public constructor(public imgData: any) {}
 
-  public size(): [number, number] { return [this.imgData.width, this.imgData.height]; }
+  public size(): [number, number] {
+    return [this.imgData.width, this.imgData.height];
+  }
   public getPixel(i: number, j: number): Pixel {
     const idx = j * this.imgData.width * 4 + i * 4;
     return {
@@ -43,16 +44,15 @@ class MImageData {
     return (px.r + px.g + px.b) / 3;
   }
 
-  public setGray(i: number, j: number, v: value) {
+  public setGray(i: number, j: number, v: number) {
     this.setPixel(i, j, { r: v, g: v, b: v, a: 255 });
   }
 }
 
-
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
   providers: [WebWorkerService]
 })
 export class AppComponent implements OnInit {
@@ -72,10 +72,11 @@ export class AppComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private webWorkerService: WebWorkerService) { }
+    private webWorkerService: WebWorkerService
+  ) {}
 
-  @ViewChild('canvasOrig') canvasOrig: ElementRef;
-  @ViewChild('canvasBinary') canvasBinary: ElementRef;
+  @ViewChild("canvasOrig") canvasOrig: ElementRef;
+  @ViewChild("canvasBinary") canvasBinary: ElementRef;
 
   ngOnInit() {
     console.log("ngOnInit");
@@ -83,10 +84,9 @@ export class AppComponent implements OnInit {
   }
 
   private async load(extAdd = ".jpg"): Promise<void> {
-    const orig = `${this.imageUrl}`
+    const orig = `${this.imageUrl}`;
 
     const replaceExt = (extAdd, failed = true) => {
-
       const regex = /.*imgur.*\/([a-zA-Z0-9]+)(\.[a-zA-Z0-9]+)?/gm;
       let m;
       while ((m = regex.exec(orig)) !== null) {
@@ -95,34 +95,41 @@ export class AppComponent implements OnInit {
           regex.lastIndex++;
         }
         if (m[2] && !failed) {
-          extAdd = m[2]
+          extAdd = m[2];
         }
         this.imageUrl = `https://i.imgur.com/${m[1]}${extAdd}`;
       }
 
       console.log(`Load: ${this.imageUrl}`);
-    }
+    };
 
     replaceExt(extAdd);
 
-    this.loadCanvas().then(
-      null,
-      (error) => { console.log(`Error: ${error} -> retry`); replaceExt(".jpg"); return this.loadCanvas() }
-    ).then(
-      null,
-      (error) => { console.log(`Error: ${error} -> retry`); replaceExt(".jpeg"); return this.loadCanvas() }
-    ).then(
-      null,
-      (error) => { console.log(`Error: ${error} -> retry`); replaceExt(".tif"); return this.loadCanvas() }
-    )
+    this.loadCanvas()
+      .then(null, error => {
+        console.log(`Error: ${error} -> retry`);
+        replaceExt(".jpg");
+        return this.loadCanvas();
+      })
+      .then(null, error => {
+        console.log(`Error: ${error} -> retry`);
+        replaceExt(".jpeg");
+        return this.loadCanvas();
+      })
+      .then(null, error => {
+        console.log(`Error: ${error} -> retry`);
+        replaceExt(".tif");
+        return this.loadCanvas();
+      })
+      .then(null, error => {
+        throw `Failed to load your imgur URL (CORS is probably preventing it!)`;
+      })
       .then(
-        null,
-        error => { throw `Failed to load your imgur URL (CORS is probably preventing it!)`; }
-      ).
-      then(
         () => this.updateFiltered(),
-        error => { this.outputLines = [`${error}`]; }
-      )
+        error => {
+          this.outputLines = [`${error}`];
+        }
+      );
   }
 
   public async loadCanvas(): Promise<void> {
@@ -131,14 +138,19 @@ export class AppComponent implements OnInit {
       this.imageOrig.crossOrigin = "";
       this.imageOrig.onerror = () => reject("load failed");
       this.imageOrig.onload = () => {
-        console.log("Loaded canvas:", this.imageOrig.width, this.imageOrig.height);
+        console.log(
+          "Loaded canvas:",
+          this.imageOrig.width,
+          this.imageOrig.height
+        );
         const c = this.canvasOrig.nativeElement;
-        c.width = this.imageOrig.width
+        c.width = this.imageOrig.width;
         c.height = this.imageOrig.height;
-        const ctx = this.canvasOrig.nativeElement.getContext('2d');
+        const ctx = this.canvasOrig.nativeElement.getContext("2d");
         ctx.drawImage(this.imageOrig, 0, 0);
-        this.imgDataOrig = new MImageData(ctx.getImageData(0,
-          0, this.imageOrig.width, this.imageOrig.height));
+        this.imgDataOrig = new MImageData(
+          ctx.getImageData(0, 0, this.imageOrig.width, this.imageOrig.height)
+        );
         resolve();
       };
       this.imageOrig.src = this.imageUrl;
@@ -148,12 +160,13 @@ export class AppComponent implements OnInit {
   private async updateFiltered() {
     this.updateBinaryImage().then(
       () => this.computeOutput(),
-      error => { this.outputLines = [`${error}`]; }
-    )
+      error => {
+        this.outputLines = [`${error}`];
+      }
+    );
   }
 
   private async updateBinaryImage() {
-
     const img = this.imgDataOrig;
     if (!img) {
       throw "Image not loaded!";
@@ -172,55 +185,54 @@ export class AppComponent implements OnInit {
     }
     this.canvasBinary.nativeElement.width = s[0];
     this.canvasBinary.nativeElement.height = s[1];
-    this.canvasBinary.nativeElement.getContext('2d').putImageData(this.imgDataBinary.imgData, 0, 0);
+    this.canvasBinary.nativeElement
+      .getContext("2d")
+      .putImageData(this.imgDataBinary.imgData, 0, 0);
   }
 
   private async computeOutput() {
-    return this.compute()
-      .then(
-        value => { this.outputLines = value; },
-        error => { this.outputLines = [`${error}`]; }
-      );
+    return this.compute().then(
+      value => {
+        this.outputLines = value;
+      },
+      error => {
+        this.outputLines = [`${error}`];
+      }
+    );
   }
 
   private async compute(): Promise<string[]> {
-    console.log("Compute Output: Start Webworker");
-
-    if(this.webWorkerResult)
-    {
+    if (this.webWorkerResult) {
       this.webWorkerService.terminate(this.webWorkerResult);
     }
-
-    this.webWorkerResult = this.webWorkerService.run(
-      this.computeString,
-      {
-        imgData: this.imgDataBinary.imgData,
-        symbols0: Array.from(this.utfSymbol0),
-        symbols1: Array.from(this.utfSymbol1),
-        turn: this.turn
-      }
-    );
+    console.log("Compute Output: Start Webworker");
+    this.webWorkerResult = this.webWorkerService.run(this.computeString, {
+      imgData: this.imgDataBinary.imgData,
+      symbols0: Array.from(this.utfSymbol0),
+      symbols1: Array.from(this.utfSymbol1),
+      turn: this.turn
+    });
 
     return this.webWorkerResult;
   }
 
   /*
-  * The webworker parallel function to compute 
-  * the stringified version of the binary image.
-  */
+   * The webworker parallel function to compute
+   * the stringified version of the binary image.
+   */
   private computeString(inp: {
-    imgData: ImageData,
-    symbols0: Array<string>,
-    symbols1: Array<string>,
-    turn: boolean
-  }
-  ): string[] {
-
+    imgData: ImageData;
+    symbols0: Array<string>;
+    symbols1: Array<string>;
+    turn: boolean;
+  }): string[] {
     // Workaround: Copy of defintion since prototypes are not serialized
     class MMImageData {
-      public constructor(public imgData: any) { }
+      public constructor(public imgData: any) {}
 
-      public size(): [number, number] { return [this.imgData.width, this.imgData.height]; }
+      public size(): [number, number] {
+        return [this.imgData.width, this.imgData.height];
+      }
       public getPixel(i: number, j: number): Pixel {
         const idx = j * this.imgData.width * 4 + i * 4;
         return {
@@ -244,14 +256,14 @@ export class AppComponent implements OnInit {
         return (px.r + px.g + px.b) / 3;
       }
 
-      public setGray(i: number, j: number, v: value) {
+      public setGray(i: number, j: number, v: number) {
         this.setPixel(i, j, { r: v, g: v, b: v, a: 255 });
       }
     }
 
     const img = new MMImageData(inp.imgData);
     const s = img.size();
-    console.log(`Webworker: Size: ${s}`)
+    //console.log(`Webworker: Size: ${s}`);
 
     const symbols0 = inp.symbols0;
     const symbols1 = inp.symbols1;
@@ -261,69 +273,61 @@ export class AppComponent implements OnInit {
     if (symbols0.length < 1 || symbols1.length < 1) {
       throw "Webworker: Enter some Symbols!";
     }
-    console.log(`Webworker: Symbols: ${symbols0.length}, ${symbols1.length}`)
-
+    //console.log(`Webworker: Symbols: ${symbols0.length}, ${symbols1.length}`);
 
     // Make a range, generators dont work in webworkers.
     const range = (start, end, step = 1) => {
-     return [start, end, step];
-    }
+      return [start, end, step];
+    };
 
     // Make a for Loop, generators dont work in webworkers!
     const forLoop = (range, lambda) => {
-      if(range[2]>0){
-        for(let i = range[0]; i < range[1]; i+=range[2])
-        {
+      if (range[2] > 0) {
+        for (let i = range[0]; i < range[1]; i += range[2]) {
+          lambda(i);
+        }
+      } else {
+        for (let i = range[0]; i > range[1]; i += range[2]) {
           lambda(i);
         }
       }
-      else{
-        for(let i = range[0]; i > range[1]; i+=range[2])
-        {
-          lambda(i);
-        }
-      }
-    }
-
-    setInterval(() => console.log("waiting..."), 500);
+    };
 
     let rangeX, rangeY, get;
     if (turn) {
-      console.log("Webworker: Turn output!")
+      console.log("Webworker: Turn output!");
       rangeY = () => range(0, s[0]);
       rangeX = () => range(s[1] - 1, 0, -1);
       get = (x, y) => img.getGray(y, x);
-    }
-    else {
+    } else {
       rangeX = () => range(0, s[0]);
       rangeY = () => range(0, s[1]);
       get = (x, y) => img.getGray(x, y);
     }
 
     let o = [];
-    
-    forLoop(rangeY(), (y) => {
+
+    forLoop(rangeY(), y => {
       let ss = "";
-      
-      forLoop(rangeX(), (x) => {
+
+      forLoop(rangeX(), x => {
         let n = Math.trunc(Math.random() * symbols0.length);
         let k = Math.trunc(Math.random() * symbols1.length);
         if (get(x, y) === 255) {
           ss += symbols0[n];
-        }
-        else {
+        } else {
           ss += symbols1[k];
         }
       });
       o.push(ss);
     });
 
-    console.log("Webworker: Done!")
+    //console.log("Webworker: Done!");
     return o;
   }
 
   public copyOutput() {
-    console.log("Copy")
+    console.log("Copy");
 
     let listener = (e: ClipboardEvent) => {
       let clipboard = e.clipboardData || window["clipboardData"];
@@ -331,35 +335,33 @@ export class AppComponent implements OnInit {
       e.preventDefault();
     };
 
-    document.addEventListener("copy", listener, false)
+    document.addEventListener("copy", listener, false);
     document.execCommand("copy");
     document.removeEventListener("copy", listener, false);
   }
 
   public showHelp() {
     const dialogRef = this.dialog.open(DialogHelpComponent, {
-      width: '70%',
+      width: "70%"
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      console.log("The dialog was closed");
     });
   }
-
 }
 
 @Component({
-  selector: 'dialog-help',
-  templateUrl: 'dialog-help.component.html',
+  selector: "dialog-help",
+  templateUrl: "dialog-help.component.html"
 })
 export class DialogHelpComponent {
-
   constructor(
     public dialogRef: MatDialogRef<DialogHelpComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
-
 }
