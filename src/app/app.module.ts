@@ -1,9 +1,9 @@
-import '../polyfills';
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent, DialogHelpComponent } from './app.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import "../polyfills";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { AppComponent, DialogHelpComponent } from "./app.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import {
   MatAutocompleteModule,
@@ -40,8 +40,8 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatTreeModule,
-} from '@angular/material';
+  MatTreeModule
+} from "@angular/material";
 
 @NgModule({
   declarations: [AppComponent, DialogHelpComponent],
@@ -58,7 +58,10 @@ import {
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule],
+    MatDialogModule,
+    MatMenuModule
+  ],
+  providers: [{ provide: "windowObject", useValue: window }],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

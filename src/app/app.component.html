@@ -85,13 +85,18 @@
 
   <div class="row">
     <div>
+      <button mat-button class="button" (click)="showHelp()" value="Show help!">
+        Help
+      </button>
+    </div>
+    <div>
       <button
         mat-button
-        class="helpButton"
-        (click)="showHelp()"
+        class="button"
+        (click)="openGithub()"
         value="Show help!"
       >
-        Help
+        GitHub
       </button>
     </div>
   </div>
@@ -106,31 +111,37 @@
   <div class="title">Output</div>
   <div class="input">
     <div class="name">LineHeight</div>
-    <mat-slider #lineHeight min="6" max="20" value="10" tickInterval="1">
+    <mat-slider
+      #lineHeightSlider
+      min="6"
+      max="20"
+      [(value)]="lineHeight"
+      tickInterval="1"
+    >
     </mat-slider>
-    <div class="value">{{ lineHeight.value }}</div>
+    <div class="value">{{ lineHeightSlider.value }}</div>
   </div>
 
   <div class="input">
     <div class="name">FontSize</div>
     <mat-slider
-      #fontSize
+      #fontSizeSlider
       min="6"
       max="20"
-      value="9"
+      [(value)]="fontSize"
       tickInterval="1"
     ></mat-slider>
-    <div class="value">{{ fontSize.value }}</div>
+    <div class="value">{{ fontSizeSlider.value }}</div>
   </div>
 
   <div class="row">
     <div>
-      <button
-        class="copyButton"
-        mat-button
-        (click)="copyOutput()"
-        value="Click to copy output"
-      >
+      <mat-menu #appMenu="matMenu">
+        <button mat-menu-item (click)="copyOutput()">As Text</button>
+        <button mat-menu-item (click)="copyOutput('html')">As HTML</button>
+      </mat-menu>
+
+      <button mat-button [matMenuTriggerFor]="appMenu" class="button">
         Copy Output
       </button>
     </div>
@@ -144,8 +155,8 @@
   <div class="outputText">
     <div
       class="outputTextRows"
-      [style.font-size.pt]="fontSize.value"
-      [style.line-height.pt]="lineHeight.value"
+      [style.font-size.pt]="fontSizeSlider.value"
+      [style.line-height.pt]="lineHeightSlider.value"
       id="output"
     >
       <div *ngFor="let line of outputLines">{{ line }}</div>

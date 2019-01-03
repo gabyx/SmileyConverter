@@ -70,9 +70,13 @@ export class AppComponent implements OnInit {
 
   private webWorkerResult: Promise<string[]>;
 
+  private fontSize = 12;
+  private lineHeight = 10;
+
   constructor(
     private dialog: MatDialog,
-    private webWorkerService: WebWorkerService
+    private webWorkerService: WebWorkerService,
+    @Inject("windowObject") private readonly window: Window
   ) {}
 
   @ViewChild("canvasOrig") canvasOrig: ElementRef;
@@ -326,12 +330,25 @@ export class AppComponent implements OnInit {
     return o;
   }
 
-  public copyOutput() {
+  public copyOutput(as = "text") {
     console.log("Copy");
 
     let listener = (e: ClipboardEvent) => {
       let clipboard = e.clipboardData || window["clipboardData"];
-      clipboard.setData("text", this.outputLines.join("\n"));
+      if (as === "text") {
+        clipboard.setData("text", this.outputLines.join("\n"));
+      } else if (as === "html") {
+        let s = `<div style="font-size:${this.fontSize}pt;line-height:${
+          this.lineHeight
+        }pt">`;
+        this.outputLines.forEach((line, index) => {
+          s += `<div style="text-overflow: unset; white-space: nowrap;">${line}</div>`;
+        });
+        s += "</div>";
+        clipboard.setData("text", s);
+      } else {
+        throw "not implemented";
+      }
       e.preventDefault();
     };
 
@@ -348,6 +365,10 @@ export class AppComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log("The dialog was closed");
     });
+  }
+
+  public openGithub() {
+    this.window.open("http://www.github.com/gabyx/SmileyConverter", "_blank");
   }
 }
 

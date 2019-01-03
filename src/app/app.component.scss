@@ -55,8 +55,7 @@ button {
   align-items: center;
 }
 
-.copyButton,
-.helpButton {
+.button {
   border: solid 1pt;
   border-color: mat-color($app-theme-primary, lighter);
   color: $primary;
