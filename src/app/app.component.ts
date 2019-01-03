@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
   private webWorkerResult: Promise<string[]>;
 
   private fontSize = 12;
-  private lineHeight = 10;
+  private lineHeight = 16;
 
   constructor(
     private dialog: MatDialog,
