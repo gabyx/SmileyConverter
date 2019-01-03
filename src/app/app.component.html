@@ -1,0 +1,83 @@
+<div class="mat-app-background basic-container">
+  <div class="inputs">
+  <div class="title">Input</div>
+    <div class="input">
+      <div class="name">Image Url</div>
+      <mat-form-field class="input">
+        <input matInput type="text" (keyUp.enter)="load()" (blur)="load()" [(ngModel)]="imageUrl">
+        <button mat-button *ngIf="imageUrl" matSuffix mat-icon-button aria-label="Clear" (click)="imageUrl=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="input">
+      <div class="name">Threshold</div>
+      <mat-slider #thresholdSlider min="1"
+    max="255" tickInterval="0" [(value)]="threshold" (change)="updateFiltered()"></mat-slider>
+      <div class="value">{{ thresholdSlider.value }}</div>
+    </div>
+    <div class="input">
+      <div class="name">Symbols 1</div>
+      <mat-form-field class="">
+        <input matInput type="text" [(ngModel)]="utfSymbol0" (keyup.enter)="computeOutput()" (blur)="computeOutput()">
+        <button mat-button *ngIf="utfSymbol0" matSuffix mat-icon-button aria-label="Clear" (click)="utfSymbol0=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="input">
+      <div class="name">Symbols 2</div>
+      <mat-form-field class="">
+        <input matInput type="text" [(ngModel)]="utfSymbol1" (keyup.enter)="computeOutput()" (blur)="computeOutput()">
+        <button mat-button *ngIf="utfSymbol1" matSuffix mat-icon-button aria-label="Clear" (click)="utfSymbol1=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row">
+     <div><button mat-button class="helpButton" (click)="showHelp()" value="Show help!" >Help</button></div>
+  </div>
+
+  <div outputs>
+    <div class="title">Original</div>
+    <div class="output">
+      <canvas #canvasOrig></canvas>
+    </div>
+    <div class="title">Filtered</div>
+    <div class="output">
+      <canvas #canvasBinary></canvas>
+    </div>
+  </div>
+
+    <div class="title">Output</div>
+    <div class="input">
+      <div class="name">LineHeight</div>
+      <mat-slider #lineHeight min="6"
+    max="20" value="10" tickInterval="1">
+      </mat-slider>
+      <div class="value">{{ lineHeight.value }}</div>
+    </div>
+
+    <div class="input">
+      <div class="name">FontSize</div>
+      <mat-slider #fontSize min="6"
+    max="20" value="9" tickInterval="1"></mat-slider>
+      <div class="value">{{ fontSize.value }}</div>
+    </div>
+    
+    <div class="row">
+    <div><button class="copyButton" mat-button (click)="copyOutput()" value="Click to copy output" >Copy Output</button></div>    
+    <div class="input"><mat-checkbox [checked]="turn" (change)="turn = !turn; computeOutput()">Turn Result</mat-checkbox></div>
+    </div>
+
+    <div class="output">
+      <div class="outputText" [style.font-size.pt]="fontSize.value" [style.line-height.pt]="lineHeight.value" id="output" >
+        <div *ngFor="let line of outputLines">{{ line }}</div>
+      </div>
+    </div>
+</div>
+<span class="version-info">Current build: Angular 7.2.0</span>
