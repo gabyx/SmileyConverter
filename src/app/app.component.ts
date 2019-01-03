@@ -291,7 +291,7 @@ export class AppComponent implements OnInit {
           lambda(i);
         }
       } else {
-        for (let i = range[0]; i > range[1]; i += range[2]) {
+        for (let i = range[0]; i >= range[1]; i += range[2]) {
           lambda(i);
         }
       }
