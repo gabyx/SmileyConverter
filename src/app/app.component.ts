@@ -57,7 +57,7 @@ class MImageData {
 })
 export class AppComponent implements OnInit {
   public utfSymbol0 = "🍀😀";
-  public utfSymbol1 = "👾";
+  public utfSymbol1 = "🐳🐬🐋🐟🦈";
   public imageUrl = "https://imgur.com/6cf1KE0";
   public outputLines: string[] = ["Not computed!"];
   public threshold: number = 200;
