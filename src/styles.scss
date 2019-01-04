@@ -15,20 +15,22 @@ body {
   margin: 0;
 }
 
-::-webkit-scrollbar {
-  display: none;
-}
-
 .basic-container {
-  padding: 30px;
+  padding: 20px;
   color: cadetblue;
 }
 
 .basic-container-dialog {
   padding: 30px;
   border-radius: 5pt;
-  color: rgb(95, 158, 160);
+  background-color:$accent;
   opacity: 0.97;
+
+  button {
+    font-weight: bold;
+    border: 1pt solid;
+    border-color: $primary;
+  }
 }
 
 .version-info {
